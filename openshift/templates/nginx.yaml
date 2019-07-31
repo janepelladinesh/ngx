@@ -1,0 +1,51 @@
+kind: List
+apiVersion: v1
+metadata: {}
+
+items:
+
+- apiVersion: v1
+  kind: Template
+  metadata:
+    name: non
+    annotations:
+      description: NGINX EXAMPLE TO  MAINTAIN LOAD BALANCE FOR NODEJS SAMPLE WEB-PAGE
+      
+  parameters:
+  - name: NAME
+    description: Name prefix for each object created
+    required: true
+    value: node-nginxe
+  - name: IMAGE
+    description: Image with nginx
+    required: true
+    value: dineshcherry/kafkapy:pasa
+  objects:
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: ${NAME}
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: ${NAME}
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${NAME}
+        spec:
+          containers:
+          - name: nginx-node
+            image: ${IMAGE}
+            ports:
+            - containerPort: 8080
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${NAME}
+    spec:
+      ports:
+      - name: nginx-node
+        port: 8080
+      selector:
+        deploymentconfig: ${NAME}
